@@ -39,4 +39,9 @@ def ask_openrouter(prompt: str) -> str:
     with urllib.request.urlopen(request, timeout=120) as response:
         result = json.loads(response.read().decode("utf-8"))
 
-    return result["choices"][0]["message"]["content"].strip()
+        content = result["choices"][0]["message"].get("content")
+
+    if not content:
+        raise ValueError("OpenRouter returned an empty response.")
+
+    return content.strip()
