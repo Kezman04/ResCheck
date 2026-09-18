@@ -4,7 +4,7 @@ import urllib.request
 
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-OPENROUTER_MODEL = "qwen/qwen3.8-27b:free"
+OPENROUTER_MODEL = "openrouter/free"
 
 
 def ask_openrouter(prompt: str) -> str:
