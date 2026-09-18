@@ -355,13 +355,13 @@ JOB DESCRIPTION:
 
     try:
         result = json.loads(raw_response)
-    except (json.JSONDecodeError, TypeError):
+    except (json.JSONDecodeError, TypeError, ValueError):
         # Retry once if the AI returns malformed or empty JSON.
         raw_response = ask_ai(prompt)
 
         try:
             result = json.loads(raw_response)
-        except (json.JSONDecodeError, TypeError):
+        except (json.JSONDecodeError, TypeError, ValueError):
             raise ValueError(
                 "AI returned an invalid tailoring response after retrying."
             )
