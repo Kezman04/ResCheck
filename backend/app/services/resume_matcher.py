@@ -351,20 +351,20 @@ JOB DESCRIPTION:
 {job_description}
 """
 
-raw_response = ask_ai(prompt)
-
-try:
-    result = json.loads(raw_response)
-except (json.JSONDecodeError, TypeError):
-    # Retry once if the AI returns malformed or empty JSON.
     raw_response = ask_ai(prompt)
 
     try:
         result = json.loads(raw_response)
     except (json.JSONDecodeError, TypeError):
-        raise ValueError(
-            "AI returned an invalid tailoring response after retrying."
-        )
+        # Retry once if the AI returns malformed or empty JSON.
+        raw_response = ask_ai(prompt)
+
+        try:
+            result = json.loads(raw_response)
+        except (json.JSONDecodeError, TypeError):
+            raise ValueError(
+                "AI returned an invalid tailoring response after retrying."
+            )
 
     resume_lower = resume_text.lower()
 
