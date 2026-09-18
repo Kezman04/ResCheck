@@ -13,23 +13,23 @@ def ask_openrouter(prompt: str) -> str:
     if not api_key:
         raise RuntimeError("OPENROUTER_API_KEY is not set.")
 
-   payload = {
-    "model": OPENROUTER_MODEL,
-    "messages": [
-        {
-            "role": "user",
-            "content": prompt,
-        }
-    ],
-    "temperature": 0,
-    "max_tokens": 3000,
-    "reasoning": {
-        "enabled": False
-    },
-    "response_format": {
-        "type": "json_object"
-    },
-}
+    payload = {
+        "model": OPENROUTER_MODEL,
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+        "temperature": 0,
+        "max_tokens": 3000,
+        "reasoning": {
+            "enabled": False
+        },
+        "response_format": {
+            "type": "json_object"
+        },
+    }
     data = json.dumps(payload).encode("utf-8")
 
     request = urllib.request.Request(
