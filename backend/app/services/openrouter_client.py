@@ -21,7 +21,7 @@ def ask_openrouter(prompt: str) -> str:
                 "content": prompt,
             }
         ],
-        "temperature": 0.2,
+        "temperature": 0,
     }
 
     data = json.dumps(payload).encode("utf-8")
