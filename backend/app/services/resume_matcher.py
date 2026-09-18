@@ -46,6 +46,21 @@ Rules:
 - Do not invent skills, education, projects, or experience.
 - Judge only from the supplied resume and job posting.
 - Keep each item concise.
+- Do not invent skills, education, projects, or experience.
+- Judge only from the supplied resume and job posting.
+- Keep each item concise.
+- Return at most 6 matched_skills.
+- Return at most 6 missing_skills.
+- Return at most 4 strengths.
+- Return at most 4 gaps.
+- Return at most 4 recommendations.
+- Each item must be one concise sentence.
+
+RESUME:
+{resume_text}
+
+JOB POSTING:
+{job_description}
 
 RESUME:
 {resume_text}
