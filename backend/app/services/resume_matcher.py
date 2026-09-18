@@ -36,8 +36,7 @@ Return ONLY valid JSON with exactly these keys:
 Rules:
 - match_score must be the most accurate whole-number score from 0 to 100.
 - Do not round match_score to multiples of 5 or 10.
-- Scores such as 63, 71, 78, 84, or 92 are valid when justified by the actual resume-to-job match.
-- Base match_score on the actual degree of alignment between the resume and job requirements.
+- Base match_score only on the actual alignment between the resume and job requirements.
 - matched_skills must contain skills supported by BOTH the resume and job posting.
 - missing_skills must contain important job requirements not supported by the resume.
 - strengths must describe evidence-based advantages from the resume.
@@ -45,10 +44,6 @@ Rules:
 - recommendations must give specific improvements to the resume or application.
 - Do not invent skills, education, projects, or experience.
 - Judge only from the supplied resume and job posting.
-- Keep each item concise.
-- Do not invent skills, education, projects, or experience.
-- Judge only from the supplied resume and job posting.
-- Keep each item concise.
 - Return at most 6 matched_skills.
 - Return at most 6 missing_skills.
 - Return at most 4 strengths.
@@ -61,27 +56,22 @@ RESUME:
 
 JOB POSTING:
 {job_description}
-
-RESUME:
-{resume_text}
-
-JOB POSTING:
-{job_description}
 """
 
-    raw_response = ask_ai(prompt)
-
-try:
-    result = json.loads(raw_response)
-except (json.JSONDecodeError, TypeError):
-    # AI occasionally returns an empty or malformed response.
-    # Retry once automatically before failing.
     raw_response = ask_ai(prompt)
 
     try:
         result = json.loads(raw_response)
     except (json.JSONDecodeError, TypeError):
-        raise ValueError("AI returned an invalid response after retrying.")
+        # Retry once if the AI returns malformed or empty JSON.
+        raw_response = ask_ai(prompt)
+
+        try:
+            result = json.loads(raw_response)
+        except (json.JSONDecodeError, TypeError):
+            raise ValueError(
+                "AI returned an invalid response after retrying."
+            )
 
     score = result.get("match_score", 0)
 
@@ -100,25 +90,37 @@ except (json.JSONDecodeError, TypeError):
         for skill in missing_skills[:5]:
             skill_lower = skill.lower()
 
-            if any(word in skill_lower for word in ["tool", "software", "cad", "uvm"]):
+            if any(
+                word in skill_lower
+                for word in ["tool", "software", "cad", "uvm"]
+            ):
                 recommendation = (
                     f"Explore {skill} through a focused lab, tutorial, "
                     f"or small project that gives you hands-on exposure."
                 )
 
-            elif any(word in skill_lower for word in ["design", "pcb", "rtl", "vlsi"]):
+            elif any(
+                word in skill_lower
+                for word in ["design", "pcb", "rtl", "vlsi"]
+            ):
                 recommendation = (
                     f"Develop practical familiarity with {skill} by applying "
                     f"the underlying concepts in a small design project."
                 )
 
-            elif any(word in skill_lower for word in ["analysis", "integrity", "power", "noise"]):
+            elif any(
+                word in skill_lower
+                for word in ["analysis", "integrity", "power", "noise"]
+            ):
                 recommendation = (
                     f"Strengthen your understanding of {skill} through "
                     f"coursework, technical exercises, and hands-on analysis."
                 )
 
-            elif any(word in skill_lower for word in ["verification", "testing", "testbench"]):
+            elif any(
+                word in skill_lower
+                for word in ["verification", "testing", "testbench"]
+            ):
                 recommendation = (
                     f"Build experience with {skill} through verification labs, "
                     f"test exercises, or a relevant personal project."
@@ -133,7 +135,6 @@ except (json.JSONDecodeError, TypeError):
             recommendations.append(recommendation)
 
         result["recommendations"] = recommendations
-
 
     return result
 
