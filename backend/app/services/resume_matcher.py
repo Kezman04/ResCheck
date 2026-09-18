@@ -55,7 +55,18 @@ JOB POSTING:
 """
 
     raw_response = ask_ai(prompt)
+
+try:
     result = json.loads(raw_response)
+except (json.JSONDecodeError, TypeError):
+    # AI occasionally returns an empty or malformed response.
+    # Retry once automatically before failing.
+    raw_response = ask_ai(prompt)
+
+    try:
+        result = json.loads(raw_response)
+    except (json.JSONDecodeError, TypeError):
+        raise ValueError("AI returned an invalid response after retrying.")
 
     score = result.get("match_score", 0)
 
